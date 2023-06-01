@@ -1,0 +1,79 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace QuarantinedMailHandler
+{
+    public class QuarantinedMailRepository : IQuarantinedMailRepository
+    {
+        private readonly QuarantinedMailDbContext _context;
+
+        public QuarantinedMailRepository(QuarantinedMailDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<QuarantinedMail>> GetAllAsync()
+        {
+            return await _context.QuarantinedMails.ToListAsync();
+        }
+
+        public async Task<QuarantinedMail> GetByIdAsync(int id)
+        {
+            return await _context.QuarantinedMails.FindAsync(id) ?? throw new 
+                NotFoundException($"Quarantined mail with id {id} not found.");
+        }
+
+        public async Task AddAsync(QuarantinedMail mail)
+        {
+            await _context.QuarantinedMails.AddAsync(mail);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(QuarantinedMail mail)
+        {
+            _context.QuarantinedMails.Update(mail);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            try
+            {
+                // Find the quarantined mail by id
+                var mail = await _context.QuarantinedMails.FindAsync(id);
+
+                // Check if the mail is null
+                if (mail == null)
+                {
+                    // Throw a NotFoundException
+                    throw new NotFoundException($"Quarantined mail with id {id} not found.");
+                }
+
+                // Delete the mail from the database
+                _context.QuarantinedMails.Remove(mail);
+                await _context.SaveChangesAsync();
+            }
+            catch (NotFoundException ex)
+            {
+                // Handle the NotFoundException
+                Console.WriteLine(ex.Message);
+                // Or rethrow the exception
+                // throw;
+            }
+        }
+    }
+    public class NotFoundException : Exception
+    {
+        public NotFoundException()
+        {
+        }
+
+        public NotFoundException(string message) : base(message)
+        {
+        }
+
+        public NotFoundException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+}
