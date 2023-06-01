@@ -11,7 +11,7 @@ using MimeKit;
 using System.Net.Mail;
 
 
-namespace QuarentinedMailProcessor
+namespace QuarentinedMailHandler
 {
     class IdleClient : IDisposable
     {

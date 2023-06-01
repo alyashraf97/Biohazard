@@ -34,6 +34,38 @@ namespace QuarantinedMailHandler
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateByIdAsync(QuarantinedMail mail)
+        {
+            // Check if the mail parameter is null
+            if (mail == null)
+            {
+                // Throw an ArgumentNullException
+                throw new ArgumentNullException(nameof(mail));
+            }
+
+            // Find the existing mail by id
+            var existingMail = await _context.QuarantinedMails.FindAsync(mail.ID);
+
+            // Check if the existing mail is null
+            if (existingMail == null)
+            {
+                // Throw a NotFoundException
+                throw new NotFoundException($"Quarantined mail with id {mail.ID} not found.");
+            }
+
+            // Update the existing mail with the new mail properties
+            existingMail.Sender = mail.Sender;
+            existingMail.Body = mail.Body;
+            existingMail.Date = mail.Date;
+            existingMail.Subject = mail.Subject;
+            existingMail.Header = mail.Header;
+            existingMail.Severity = mail.Severity;
+            existingMail.CurrentState = mail.CurrentState;
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(int id)
         {
             try

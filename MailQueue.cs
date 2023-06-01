@@ -1,40 +1,41 @@
-﻿using QuarantinedMailHandler;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-public class QuarantinedMailQueue
+namespace QuarantinedMailHandler
 {
-    private static readonly Lazy<QuarantinedMailQueue> instance = 
-        new Lazy<QuarantinedMailQueue>(() => new QuarantinedMailQueue());
 
-    public static QuarantinedMailQueue Instance
+    public class QuarantinedMailQueue
     {
-        get { return instance.Value; }
-    }
+        private static readonly Lazy<QuarantinedMailQueue> instance =
+            new Lazy<QuarantinedMailQueue>(() => new QuarantinedMailQueue());
 
-    private ConcurrentQueue<QuarantinedMail> mailQueue;
-
-    private QuarantinedMailQueue()
-    {
-        mailQueue = new ConcurrentQueue<QuarantinedMail>();
-    }
-
-    public void EnqueueQuarantinedMail(QuarantinedMail mail)
-    {
-        mailQueue.Enqueue(mail);
-    }
-
-    public QuarantinedMail DequeueQuarantinedMail()
-    {
-        if (mailQueue.TryDequeue(out var mail))
+        public static QuarantinedMailQueue Instance
         {
-            return mail;
+            get { return instance.Value; }
         }
-        else
+
+        private ConcurrentQueue<QuarantinedMail> mailQueue;
+
+        private QuarantinedMailQueue()
         {
-            return null;
+            mailQueue = new ConcurrentQueue<QuarantinedMail>();
+        }
+
+        public void EnqueueQuarantinedMail(QuarantinedMail mail)
+        {
+            mailQueue.Enqueue(mail);
+        }
+
+        public QuarantinedMail DequeueQuarantinedMail()
+        {
+            if (mailQueue.TryDequeue(out var mail))
+            {
+                return mail;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
-
-
 }
