@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QuarantinedMailHandler.DataModel;
 
-namespace QuarantinedMailHandler
+namespace QuarantinedMailHandler.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]

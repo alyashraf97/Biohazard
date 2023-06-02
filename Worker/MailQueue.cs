@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace QuarantinedMailHandler
+namespace QuarantinedMailHandler.Worker
 {
 
     public class QuarantinedMailQueue

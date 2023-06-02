@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace QuarantinedMailHandler
+namespace QuarantinedMailHandler.DataModel
 {
     public class QuarantinedMailDbContext : DbContext
     {
