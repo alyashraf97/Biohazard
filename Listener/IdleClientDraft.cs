@@ -13,8 +13,9 @@ using Serilog; // logging framework
 using Microsoft.EntityFrameworkCore; // ORM library
 using Microsoft.Extensions.DependencyInjection; // dependency injection library
 using System.Threading.Channels;
+using QuarantinedMailHandler.DataModel;
 
-namespace QuarantinedMailHandler
+namespace QuarantinedMailHandler.Listener
 {
     class IdleClientDisposable : IDisposable
     {
@@ -33,18 +34,18 @@ namespace QuarantinedMailHandler
 
         public IdleClientDisposable(string host, int port, SecureSocketOptions sslOptions, string username, string password, QuarantinedMailDbContext dbContext)
         {
-            this.client = new ImapClient(new ProtocolLogger(Console.OpenStandardError()));
-            this.request = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
-            this.messages = new List<IMessageSummary>();
-            this.messageIds = new List<UniqueId>();
-            this.cancel = new CancellationTokenSource();
-            this.messageBodies = new BlockingCollection<string>();
+            client = new ImapClient(new ProtocolLogger(Console.OpenStandardError()));
+            request = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
+            messages = new List<IMessageSummary>();
+            messageIds = new List<UniqueId>();
+            cancel = new CancellationTokenSource();
+            messageBodies = new BlockingCollection<string>();
             this.sslOptions = sslOptions;
             this.username = username;
             this.password = password;
             this.host = host;
             this.port = port;
-            this.MyDbContext = dbContext; // inject the database context
+            MyDbContext = dbContext; // inject the database context
         }
 
         public void StartIdleClient()
@@ -139,7 +140,7 @@ namespace QuarantinedMailHandler
         }
 
 
-            // ... other fields and methods ...
+        // ... other fields and methods ...
 
         async Task GetMessageBodiesAsync(bool print)
         {

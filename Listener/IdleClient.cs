@@ -11,7 +11,8 @@ using MimeKit;
 using System.Net.Mail;
 
 
-namespace QuarentinedMailHandler
+
+namespace QuarantinedMailHandler.Listener
 {
     class IdleClient : IDisposable
     {
@@ -29,12 +30,12 @@ namespace QuarentinedMailHandler
 
         public IdleClient(string host, int port, SecureSocketOptions sslOptions, string username, string password)
         {
-            this.client = new ImapClient(new ProtocolLogger(Console.OpenStandardError()));
-            this.request = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
-            this.messages = new List<IMessageSummary>();
-            this.messageIds = new List<UniqueId>();
-            this.cancel = new CancellationTokenSource();
-            this.messageBodies = new List<string>();
+            client = new ImapClient(new ProtocolLogger(Console.OpenStandardError()));
+            request = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
+            messages = new List<IMessageSummary>();
+            messageIds = new List<UniqueId>();
+            cancel = new CancellationTokenSource();
+            messageBodies = new List<string>();
             this.sslOptions = sslOptions;
             this.username = username;
             this.password = password;
@@ -44,7 +45,7 @@ namespace QuarentinedMailHandler
 
         public void StartIdleClient()
         {
-            const SecureSocketOptions sslOptions = SecureSocketOptions.Auto;
+            //const SecureSocketOptions sslOptions = SecureSocketOptions.Auto;
             var idleClientConfig = new ConfigurationBuilder()
                 .AddJsonFile("IdleClientConfig.json")
                 .Build();
@@ -53,6 +54,9 @@ namespace QuarentinedMailHandler
             int port = int.Parse(idleClientConfig["port"]);
             var username = idleClientConfig["email"];
             var password = idleClientConfig["password"];
+            var encryption = idleClientConfig["encryption"];
+
+
 
             using (var client = new IdleClient(mailServer, port, sslOptions, username, password))
             {
@@ -60,7 +64,8 @@ namespace QuarentinedMailHandler
 
                 var idleTask = client.RunAsync();
 
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     Console.ReadKey(true);
                 }).Wait();
 
@@ -335,8 +340,6 @@ namespace QuarentinedMailHandler
 
         public void Dispose()
         {
-            client.Dispose();
-            cancel.Dispose();
         }
     }
 }

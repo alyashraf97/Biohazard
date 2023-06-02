@@ -1,4 +1,6 @@
-﻿namespace QuarantinedMailHandler.Listener
+﻿using Xunit;
+
+namespace QuarantinedMailHandler.Listener
 {
     public class IdleClientUnitTest
     {

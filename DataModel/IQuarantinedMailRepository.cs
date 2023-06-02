@@ -1,4 +1,6 @@
-﻿namespace QuarantinedMailHandler
+﻿
+
+namespace QuarantinedMailHandler.DataModel
 {
     public interface IQuarantinedMailRepository
     {

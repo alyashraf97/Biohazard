@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using QuarantinedMailHandler.DataModel;
 
 namespace QuarantinedMailHandler.WebApi
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class QuarantinedMailController : ControllerBase
@@ -28,6 +30,7 @@ namespace QuarantinedMailHandler.WebApi
             return await _context.QuarantinedMails.ToListAsync();
         }
 
+        [Authorize(Policy ="AdminOnly")]
         // GET: api/QuarantinedMail/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QuarantinedMail>> GetQuarantinedMail(long id)
