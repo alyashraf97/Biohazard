@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace QuarantinedMailHandler
+namespace QuarantinedMailHandler.DataModel
 {
     public class QuarantinedMailRepository : IQuarantinedMailRepository
     {
@@ -18,7 +18,7 @@ namespace QuarantinedMailHandler
 
         public async Task<QuarantinedMail> GetByIdAsync(int id)
         {
-            return await _context.QuarantinedMails.FindAsync(id) ?? throw new 
+            return await _context.QuarantinedMails.FindAsync(id) ?? throw new
                 NotFoundException($"Quarantined mail with id {id} not found.");
         }
 
