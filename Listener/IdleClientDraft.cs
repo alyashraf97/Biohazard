@@ -13,9 +13,9 @@ using Serilog; // logging framework
 using Microsoft.EntityFrameworkCore; // ORM library
 using Microsoft.Extensions.DependencyInjection; // dependency injection library
 using System.Threading.Channels;
-using QuarantinedMailHandler.DataModel;
+using Biohazard.DataModel;
 
-namespace QuarantinedMailHandler.Listener
+namespace Biohazard.Listener
 {
     class IdleClientDisposable : IDisposable
     {
@@ -196,19 +196,19 @@ namespace QuarantinedMailHandler.Listener
                         // Parse the message body using MimeMessage
                         var mimeMessage = MimeMessage.Load(messageBody);
 
-                        // Create a QuarantinedMail object from the MimeMessage
-                        var quarantinedMail = new QuarantinedMail(mimeMessage);
+                        // Create a QMail object from the MimeMessage
+                        var quarantinedMail = new QMail(mimeMessage);
 
-                        // Add the QuarantinedMail object to the ConcurrentDictionary using its ID as the key
+                        // Add the QMail object to the ConcurrentDictionary using its ID as the key
                         quarantinedMails.TryAdd(quarantinedMail.ID, quarantinedMail);
 
                         // Log the event
-                        Log.Information("Created a QuarantinedMail object from a new message: {0}", quarantinedMail.Subject);
+                        Log.Information("Created a QMail object from a new message: {0}", quarantinedMail.Subject);
                     }
                     catch (Exception ex)
                     {
-                        // Handle any exception that may occur while parsing or creating the QuarantinedMail object
-                        Log.Error(ex, "An exception occurred while creating a QuarantinedMail object from a new message.");
+                        // Handle any exception that may occur while parsing or creating the QMail object
+                        Log.Error(ex, "An exception occurred while creating a QMail object from a new message.");
                     }
                 }
             }

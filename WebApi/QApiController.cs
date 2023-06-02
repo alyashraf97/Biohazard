@@ -5,37 +5,37 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using QuarantinedMailHandler.DataModel;
+using Biohazard.Data;
+using Biohazard.Listener;
 
-namespace QuarantinedMailHandler.WebApi
+namespace Biohazard.WebApi
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class QuarantinedMailController : ControllerBase
+    public class QApiController : ControllerBase
     {
-        private readonly QuarantinedMailDbContext _context;
-        private readonly ILogger<QuarantinedMailController> _logger;
+        private readonly QMailDbContext _context;
+        private Serilog.ILogger _log = QLogger.GetLogger<QApiController>();
 
-        public QuarantinedMailController(QuarantinedMailDbContext context, ILogger<QuarantinedMailController> logger)
+        public QApiController(QMailDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
-        // GET: api/QuarantinedMail
+        // GET: api/QMail
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<QuarantinedMail>>> GetQuarantinedMails()
+        public async Task<ActionResult<IEnumerable<QMail>>> GetQuarantinedMails()
         {
-            return await _context.QuarantinedMails.ToListAsync();
+            return await _context.QMails.ToListAsync();
         }
 
         [Authorize(Policy ="AdminOnly")]
-        // GET: api/QuarantinedMail/5
+        // GET: api/QMail/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<QuarantinedMail>> GetQuarantinedMail(long id)
+        public async Task<ActionResult<QMail>> GetQuarantinedMail(long id)
         {
-            var quarantinedMail = await _context.QuarantinedMails.FindAsync(id);
+            var quarantinedMail = await _context.QMails.FindAsync(id);
 
             if (quarantinedMail == null)
             {
@@ -45,9 +45,9 @@ namespace QuarantinedMailHandler.WebApi
             return quarantinedMail;
         }
 
-        // PUT: api/QuarantinedMail/5
+        // PUT: api/QMail/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuarantinedMail(string id, QuarantinedMail quarantinedMail)
+        public async Task<IActionResult> PutQuarantinedMail(string id, QMail quarantinedMail)
         {
             if (id != quarantinedMail.ID)
             {
@@ -75,37 +75,37 @@ namespace QuarantinedMailHandler.WebApi
             return NoContent();
         }
 
-        // POST: api/QuarantinedMail
+        // POST: api/QMail
         [HttpPost]
-        public async Task<ActionResult<QuarantinedMail>> PostQuarantinedMail(QuarantinedMail quarantinedMail)
+        public async Task<ActionResult<QMail>> PostQuarantinedMail(QMail quarantinedMail)
         {
-            _context.QuarantinedMails.Add(quarantinedMail);
+            _context.QMails.Add(quarantinedMail);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetQuarantinedMail), new { id = quarantinedMail.ID }, quarantinedMail);
         }
 
-        // DELETE: api/QuarantinedMail/5
+        // DELETE: api/QMail/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuarantinedMail(long id)
         {
-            var quarantinedMail = await _context.QuarantinedMails.FindAsync(id);
+            var quarantinedMail = await _context.QMails.FindAsync(id);
             if (quarantinedMail == null)
             {
                 return NotFound();
             }
 
-            _context.QuarantinedMails.Remove(quarantinedMail);
+            _context.QMails.Remove(quarantinedMail);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // GET: api/QuarantinedMail/Release/5
+        // GET: api/QMail/Release/5
         [HttpGet("Release/{id}")]
         public async Task<IActionResult> ReleaseQuarantinedMail(long id)
         {
-            var quarantinedMail = await _context.QuarantinedMails.FindAsync(id);
+            var quarantinedMail = await _context.QMails.FindAsync(id);
             if (quarantinedMail == null)
             {
                 return NotFound();
@@ -116,11 +116,11 @@ namespace QuarantinedMailHandler.WebApi
             return Ok();
         }
 
-        // GET: api/QuarantinedMail/Retract/5
+        // GET: api/QMail/Retract/5
         [HttpGet("Retract/{id}")]
         public async Task<IActionResult> RetractQuarantinedMail(long id)
         {
-            var quarantinedMail = await _context.QuarantinedMails.FindAsync(id);
+            var quarantinedMail = await _context.QMails.FindAsync(id);
             if (quarantinedMail == null)
             {
                 return NotFound();
@@ -133,7 +133,7 @@ namespace QuarantinedMailHandler.WebApi
 
         private bool QuarantinedMailExists(string id)
         {
-            return _context.QuarantinedMails.Any(e => e.ID == id);
+            return _context.QMails.Any(e => e.ID == id);
         }
     }
 }

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuarantinedMailHandler", "QuarantinedMailHandler.csproj", "{6336BFB3-3537-461A-9F2D-6734F7875EC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biohazard", "Biohazard.csproj", "{6336BFB3-3537-461A-9F2D-6734F7875EC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QMHWebConsole.Server", "..\QMHWebConsole\Server\QMHWebConsole.Server.csproj", "{3ACE16BB-225C-473C-9E76-75061A5C50F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiohazardWebConsole.Server", "..\BiohazardWebConsole\Server\BiohazardWebConsole.Server.csproj", "{3ACE16BB-225C-473C-9E76-75061A5C50F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QMHWebConsole.Client", "..\QMHWebConsole\Client\QMHWebConsole.Client.csproj", "{2F84AC56-8F5A-4D95-8A83-0C4BCECF0635}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiohazardWebConsole.Client", "..\BiohazardWebConsole\Client\BiohazardWebConsole.Client.csproj", "{2F84AC56-8F5A-4D95-8A83-0C4BCECF0635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QMHWebConsole.Shared", "..\QMHWebConsole\Shared\QMHWebConsole.Shared.csproj", "{5C5A3ED7-4B1C-4E12-A890-F32BC3F73F5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiohazardWebConsole.Shared", "..\BiohazardWebConsole\Shared\BiohazardWebConsole.Shared.csproj", "{5C5A3ED7-4B1C-4E12-A890-F32BC3F73F5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿namespace QuarantinedMailHandler.Worker
+﻿namespace Biohazard.Worker
 {
     public class QuarantinedMailProducer
     {

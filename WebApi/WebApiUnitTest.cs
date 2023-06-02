@@ -1,4 +1,4 @@
-﻿namespace QuarantinedMailHandler.WebApi
+﻿namespace Biohazard.WebApi
 {
     public class WebApiUnitTest
     {

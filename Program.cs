@@ -1,6 +1,6 @@
 
 
-namespace QuarantinedMailHandler
+namespace Biohazard
 {
     public class Program
     {

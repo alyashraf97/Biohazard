@@ -1,12 +1,15 @@
-﻿using MimeKit;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using MimeKit;
 using System;
 using System.Linq;
 using Npgsql.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Biohazard.Model;
 
-namespace QuarantinedMailHandler
+namespace Biohazard
 {
-    public class QuarantinedMail
+    public class QMail
     {
         public string? Sender { get; set; }
         public string? Body { get; set; }
@@ -16,6 +19,7 @@ namespace QuarantinedMailHandler
         public string? Header { get; set; }
         public State CurrentState { get; set; }
         public SeverityLevels Severity { get; set; }
+        public ICollection<Responses> Response { get; set; }
 
         public enum SeverityLevels
         {
@@ -33,7 +37,7 @@ namespace QuarantinedMailHandler
             DeniedByAdmin
         }
 
-        public QuarantinedMail(MimeMessage message)
+        public QMail(MimeMessage message)
         {
             ParseRawMail(message);
         }

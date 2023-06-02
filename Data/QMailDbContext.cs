@@ -1,20 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Biohazard.Model;
 
-namespace QuarantinedMailHandler.DataModel
+namespace Biohazard.Data
 {
-    public class QuarantinedMailDbContext : DbContext
+    public class QMailDbContext : DbContext
     {
-        public QuarantinedMailDbContext(DbContextOptions<QuarantinedMailDbContext> options) : base(options)
+        public QMailDbContext(DbContextOptions<QMailDbContext> options) : base(options)
         {
 
         }
 
-        public DbSet<QuarantinedMail> QuarantinedMails { get; set; }
+        public DbSet<QMail> QMails { get; set; }
+        public DbSet<Responses> Responses { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql("Host=localhost;Database=qmailhandler;Username=postgres;Password=postgres");
+        }
+
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure the QuarantinedMail entity
-            modelBuilder.Entity<QuarantinedMail>(entity =>
+            // Configure the QMail entity
+            
+            modelBuilder.Entity<QMail>(entity =>
             {
                 // Specify the table name
                 entity.ToTable("quarantined_mail");
@@ -36,8 +45,9 @@ namespace QuarantinedMailHandler.DataModel
                 entity.Property(e => e.Sender).IsRequired();
                 entity.Property(e => e.Subject).IsRequired();
                 entity.HasIndex(e => e.ID).IsUnique();
+            
             });
-        }
+        }*/
     }
 
 }

@@ -12,7 +12,7 @@ using System.Net.Mail;
 
 
 
-namespace QuarantinedMailHandler.Listener
+namespace Biohazard.Listener
 {
     class IdleClient : IDisposable
     {

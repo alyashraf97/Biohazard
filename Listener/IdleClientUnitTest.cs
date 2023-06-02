@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace QuarantinedMailHandler.Listener
+namespace Biohazard.Listener
 {
     public class IdleClientUnitTest
     {

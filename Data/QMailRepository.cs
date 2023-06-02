@@ -1,40 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Biohazard.Model;
 
-namespace QuarantinedMailHandler.DataModel
+namespace Biohazard.Data
 {
-    public class QuarantinedMailRepository : IQuarantinedMailRepository
+    public class QMailRepository : IQMailRepository
     {
-        private readonly QuarantinedMailDbContext _context;
+        private readonly QMailDbContext _context;
 
-        public QuarantinedMailRepository(QuarantinedMailDbContext context)
+        public QMailRepository(QMailDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<QuarantinedMail>> GetAllAsync()
+        public async Task<IEnumerable<QMail>> GetAllMailsAsync()
         {
-            return await _context.QuarantinedMails.ToListAsync();
+            return await _context.QMails.ToListAsync();
         }
 
-        public async Task<QuarantinedMail> GetByIdAsync(int id)
+        public async Task<QMail> GetMailByIdAsync(string id)
         {
-            return await _context.QuarantinedMails.FindAsync(id) ?? throw new
+            return await _context.QMails.FindAsync(id) ?? throw new
                 NotFoundException($"Quarantined mail with id {id} not found.");
         }
 
-        public async Task AddAsync(QuarantinedMail mail)
+        public async Task AddMailAsync(QMail mail)
         {
-            await _context.QuarantinedMails.AddAsync(mail);
+            await _context.QMails.AddAsync(mail);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(QuarantinedMail mail)
+        public async Task UpdateAsync(QMail mail)
         {
-            _context.QuarantinedMails.Update(mail);
+            _context.QMails.Update(mail);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateByIdAsync(QuarantinedMail mail)
+        public async Task UpdateByIdAsync(QMail mail)
         {
             // Check if the mail parameter is null
             if (mail == null)
@@ -44,7 +45,7 @@ namespace QuarantinedMailHandler.DataModel
             }
 
             // Find the existing mail by id
-            var existingMail = await _context.QuarantinedMails.FindAsync(mail.ID);
+            var existingMail = await _context.QMails.FindAsync(mail.ID);
 
             // Check if the existing mail is null
             if (existingMail == null)
@@ -71,7 +72,7 @@ namespace QuarantinedMailHandler.DataModel
             try
             {
                 // Find the quarantined mail by id
-                var mail = await _context.QuarantinedMails.FindAsync(id);
+                var mail = await _context.QMails.FindAsync(id);
 
                 // Check if the mail is null
                 if (mail == null)
@@ -81,7 +82,7 @@ namespace QuarantinedMailHandler.DataModel
                 }
 
                 // Delete the mail from the database
-                _context.QuarantinedMails.Remove(mail);
+                _context.QMails.Remove(mail);
                 await _context.SaveChangesAsync();
             }
             catch (NotFoundException ex)

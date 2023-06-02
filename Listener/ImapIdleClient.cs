@@ -3,26 +3,27 @@ using MailKit;
 using MimeKit;
 using MailKit.Security;
 using MailKit.Net.Imap;
-using QuarantinedMailHandler.Worker;
-using QuarantinedMailHandler.DataModel;
-using QuarantinedMailHandler;
+using Biohazard.Worker;
+using Biohazard.Data;
+using Biohazard;
 
-namespace QuarantinedMailHandler.Listener
+namespace Biohazard.Listener
 {
     public class ImapIdleClient : IDisposable
     {
         readonly string host, username, password;
         readonly SecureSocketOptions sslOptions;
         readonly int port;
-        private List<MimeMessage> mimeMessages;
-        private List<UniqueId> messageIds;
+        //private IList<MimeMessage> mimeMessages;
+        private IList<UniqueId> messageIds;
         CancellationTokenSource cancel;
         CancellationTokenSource? done;
         FetchRequest fetchRequest;
         bool messagesArrived;
         ImapClient client;
+        QMailQueue queue;
         // Get a logger instance with the source context of ImapIdleClient
-        private Serilog.ILogger _log = Logger.GetLogger<ImapIdleClient>(); 
+        private Serilog.ILogger _log = QLogger.GetLogger<ImapIdleClient>(); 
 
         // Constructor
         private ImapIdleClient(
@@ -31,7 +32,7 @@ namespace QuarantinedMailHandler.Listener
         {
             client = new ImapClient(new ProtocolLogger("imap_protocol_logs.txt"));
             fetchRequest = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
-            mimeMessages = new List<MimeMessage>();
+            //mimeMessages = new List<MimeMessage>();
             cancel = new CancellationTokenSource();
             this.sslOptions = sslOptions;
             this.port = port;
@@ -80,16 +81,19 @@ namespace QuarantinedMailHandler.Listener
             }
         }
 
-        private void FetchMessages()
+        private void GetAllMessages()
         {
-            _log.Information("Fetching Summaries");
-            List<MimeMessage> fetched = null;
+            _log.Information("Getting Messages");
 
-            do
+            try
             {
-                try
+                messageIds = client.Inbox.Search(MailKit.Search.SearchQuery.All);
+
+                foreach (var id in messageIds)
                 {
-                    int StartIndex = mimeMessages.Count;
+                    var message = client.Inbox.GetMessage(id);
+                    queue.EnqueueQuarantinedMail(message);
+                    _log.Information($"New Message Queued, ID:{id}");
                 }
             }
         }

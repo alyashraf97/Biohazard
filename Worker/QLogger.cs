@@ -2,12 +2,12 @@
 using Serilog.Events;
 using Serilog.Sinks.Async;
 
-public static class Logger
+public static class QLogger
 {
     private static readonly Serilog.ILogger _logger;
 
     // Static constructor to initialize the logger
-    static Logger()
+    static QLogger()
     {
         _logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -21,7 +21,7 @@ public static class Logger
                 .WriteTo.Async(a => a.File("apilog.txt", shared: true))) // Use a different file sink
             .WriteTo.Logger(lc => lc // Create a sub-logger for the ImapIdleClient thread
                 .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("ImapIdleClient")) // Filter by the source context
-                .WriteTo.Async(a => a.File("imaplog.txt", shared: true))) // Use a different file sink
+                .WriteTo.Async(a => a.File("imapclientlog.txt", shared: true))) // Use a different file sink
             .WriteTo.Logger(lc => lc // Create a sub-logger for the worker thread
                 .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("Worker")) // Filter by the source context
                 .WriteTo.Async(a => a.File("workerlog.txt", shared: true))) // Use a different file sink
