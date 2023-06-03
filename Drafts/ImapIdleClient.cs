@@ -1,4 +1,4 @@
-﻿using Serilog;
+﻿/*using Serilog;
 using MailKit;
 using MailKit.Search;
 using MimeKit;
@@ -8,6 +8,8 @@ using Biohazard.Worker;
 using Biohazard.Data;
 using Biohazard.Shared;
 using Biohazard;
+using Microsoft.Extensions.Hosting;
+using Xunit.Sdk;
 
 namespace Biohazard.Mail
 {
@@ -17,7 +19,7 @@ namespace Biohazard.Mail
         private IList<UniqueId> messageIds;
         CancellationTokenSource cancel;
         CancellationTokenSource? done;
-        FetchRequest fetchRequest;
+        FetchRequest request;
         bool messagesArrived;
         ImapClient client;
         QMailQueue<MimeMessage> queue;
@@ -27,39 +29,86 @@ namespace Biohazard.Mail
         // Constructor
         private ImapIdleClient()
         {
-            conf = new IMapConfig();
             client = new ImapClient(new ProtocolLogger("imap_protocol_logs.txt"));
-            fetchRequest = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
-            //mimeMessages = new List<MimeMessage>();
+            request = new FetchRequest(MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
+            conf = new IMapConfig();
+            queue = QMailQueue<MimeMessage>.Instance;
+            messageIds = new List<UniqueId>();
             cancel = new CancellationTokenSource();
+            //mimeMessages = new List<MimeMessage>();
         }
 
-        public void StartIdleClient()
+        public void StartIdleAsync()
         {
             conf = new IMapConfig();
 
             using ( var client = new ImapIdleClient()) 
             {
-                client.Run();
-            }
+				var idleTask = client.RunAsync();
+
+				Task.Run(() =>
+				{
+					Task.WaitAll();
+				}).Wait();
+
+				client.Exit();
+
+				idleTask.GetAwaiter().GetResult();
+			}
         }
 
-        private void Run()
+        async Task ReconnectAsync()
         {
-            _log.Information($"Client started running at: {DateTime.Now}");
-            try
-            {
-                Reconnect();
-                GetAllMessages();
-            }
-            catch
-            {
+			Console.WriteLine("Reconnecting...");
+			if (!client.IsConnected)
+				await client.ConnectAsync(conf.Host, conf.Port, conf.Encryption, cancel.Token);
 
-            }
-        }
+			if (!client.IsAuthenticated)
+			{
+				await client.AuthenticateAsync(conf.Username, conf.Password, cancel.Token);
+
+				await client.Inbox.OpenAsync(FolderAccess.ReadOnly, cancel.Token);
+			}
+		}
+
+		async Task GetAllMessagesAsync()
+		{
+			Console.WriteLine("Fetching Message Summaries...");
+			IList<IMessageSummary> fetched = null;
+			do
+			{
+				try
+				{
+					// fetch summary information for messages that we don't already have
+					int startIndex = messages.Count;
+
+					fetched = client.Inbox.Fetch(startIndex, -1, request, cancel.Token);
+					break;
+				}
+				catch (ImapProtocolException)
+				{
+					// protocol exceptions often result in the client getting disconnected
+					await ReconnectAsync();
+				}
+				catch (IOException)
+				{
+					// I/O exceptions always result in the client getting disconnected
+					await ReconnectAsync();
+				}
+			} while (true);
+
+			foreach (var message in fetched)
+			{
+				messageIds.Add(message.UniqueId);
+				Console.WriteLine("{0}: new message: {1}", client.Inbox, message.Envelope.Subject);
+				Console.WriteLine(message.ToString());
+
+                queue.EnqueueQMail(message);
+			}
+		}
 
 
-        private void Reconnect()
+		private void Reconnect()
         {
             _log.Warning($"Reconnecting at {DateTime.Now}");
             
@@ -96,6 +145,11 @@ namespace Biohazard.Mail
             }
         }
 
+        public void Exit()
+        {
+            cancel.Cancel();
+        }
+
         public void Dispose()
         {
             client.Dispose();
@@ -103,3 +157,4 @@ namespace Biohazard.Mail
         }
     }
 }
+*/

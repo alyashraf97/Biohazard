@@ -15,14 +15,14 @@ namespace Biohazard.Shared
                 .MinimumLevel.Debug()
                 .WriteTo.Logger(lc => lc // Create a sub-logger for the default file sink
                     .Filter.ByExcluding(e => e.Properties["SourceContext"].ToString().Contains("API") // Exclude the log events that match the source context of the API thread
-                        || e.Properties["SourceContext"].ToString().Contains("ImapIdleClient") // Exclude the log events that match the source context of the ImapIdleClient thread
+                        || e.Properties["SourceContext"].ToString().Contains("ImapIdler") // Exclude the log events that match the source context of the ImapIdleClient thread
                         || e.Properties["SourceContext"].ToString().Contains("Worker")) // Exclude the log events that match the source context of the worker thread
                     .WriteTo.Async(a => a.File("defaultlog.txt", shared: true))) // Use the default file sink that writes only unmatched log events
                 .WriteTo.Logger(lc => lc // Create a sub-logger for the API thread
                     .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("API")) // Filter by the source context
                     .WriteTo.Async(a => a.File("apilog.txt", shared: true))) // Use a different file sink
                 .WriteTo.Logger(lc => lc // Create a sub-logger for the ImapIdleClient thread
-                    .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("ImapIdleClient")) // Filter by the source context
+                    .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("ImapIdler")) // Filter by the source context
                     .WriteTo.Async(a => a.File("imapclientlog.txt", shared: true))) // Use a different file sink
                 .WriteTo.Logger(lc => lc // Create a sub-logger for the worker thread
                     .Filter.ByIncludingOnly(e => e.Properties["SourceContext"].ToString().Contains("Worker")) // Filter by the source context
