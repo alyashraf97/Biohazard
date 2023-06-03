@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Biohazard.Data;
 using Biohazard.Listener;
+using Biohazard.Model;
 
 namespace Biohazard.WebApi
 {
@@ -49,7 +50,7 @@ namespace Biohazard.WebApi
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuarantinedMail(string id, QMail quarantinedMail)
         {
-            if (id != quarantinedMail.ID)
+            if (id != quarantinedMail.UniqueId)
             {
                 return BadRequest();
             }
@@ -82,7 +83,7 @@ namespace Biohazard.WebApi
             _context.QMails.Add(quarantinedMail);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetQuarantinedMail), new { id = quarantinedMail.ID }, quarantinedMail);
+            return CreatedAtAction(nameof(GetQuarantinedMail), new { id = quarantinedMail.UniqueId }, quarantinedMail);
         }
 
         // DELETE: api/QMail/5
@@ -133,7 +134,7 @@ namespace Biohazard.WebApi
 
         private bool QuarantinedMailExists(string id)
         {
-            return _context.QMails.Any(e => e.ID == id);
+            return _context.QMails.Any(e => e.UniqueId == id);
         }
     }
 }

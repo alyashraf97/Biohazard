@@ -1,4 +1,4 @@
-﻿namespace Biohazard.WebApi
+﻿namespace Biohazard.Tests
 {
     public class WebApiUnitTest
     {

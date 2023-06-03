@@ -11,11 +11,11 @@ namespace Biohazard.Data
         }
 
         public DbSet<QMail> QMails { get; set; }
-        public DbSet<Responses> Responses { get; set; }
+        public DbSet<Response> Responses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=qmailhandler;Username=postgres;Password=postgres");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=biohazard;Username=postgres;Password=postgres");
         }
 
         /*

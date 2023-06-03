@@ -45,13 +45,13 @@ namespace Biohazard.Data
             }
 
             // Find the existing mail by id
-            var existingMail = await _context.QMails.FindAsync(mail.ID);
+            var existingMail = await _context.QMails.FindAsync(mail.UniqueId);
 
             // Check if the existing mail is null
             if (existingMail == null)
             {
                 // Throw a NotFoundException
-                throw new NotFoundException($"Quarantined mail with id {mail.ID} not found.");
+                throw new NotFoundException($"Quarantined mail with id {mail.UniqueId} not found.");
             }
 
             // Update the existing mail with the new mail properties

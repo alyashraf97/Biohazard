@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Biohazard.Listener
+namespace Biohazard.Tests
 {
     public class IdleClientUnitTest
     {

@@ -1,21 +1,22 @@
 ﻿using Biohazard.Data;
-using Biohazard;
+using Biohazard.Model;
 using MimeKit;
+using MailKit;
+using MailKit.Net.Imap;
 
 
 namespace Biohazard.Worker
 {
     public class QMailProcessor
     {
-        private QMailQueue queue;
-        private MimeMessage? currentMessage;
-        private QMail? currentMessageParsed;
+        private QMailQueue<MimeMessage> queue;
         private Serilog.ILogger _log = QLogger.GetLogger<QMailProcessor>();
-        private QMailRepository _data;
+        private QMailRepository _context;
+        private ImapClient _imapClient;
 
         public QMailProcessor()
         {
-            queue = QMailQueue.Instance;
+            queue = QMailQueue<MimeMessage>.Instance;
         }
 
         public void Start()
@@ -26,14 +27,45 @@ namespace Biohazard.Worker
             {
                 try
                 {
-                    currentMessage = queue.DequeueQuarantinedMail();
+                    PushMessageToDatabase();
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"Exception occurred: {ex.Message}");
+                }
+            }
+            while (true);
+        }
 
-                    if (currentMessage != null)
+        private void PushMessageToDatabase()
+        {
+            if (!queue.IsEmpty)
+            {
+                var message = queue.DequeueQuarantinedMail();
+
+                if (message != null)
+                {
+                    try
                     {
-                        _data.
+                        var messageParsed = new QMail(message);
+                        Task.Run(() => _context.AddMailAsync(messageParsed));
                     }
+                    catch (Exception ex)
+                    {
+                        _log.Error($"Exception occurred: {ex.Message}");
+                    }
+                }
+                else 
+                {
+                    throw new NullReferenceException("Null Reference to an email in queue!");
                 }
             }
         }
+
+        private void SendEmailToUser()
+        {
+
+        }
+        
     }
 }

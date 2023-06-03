@@ -5,21 +5,22 @@ using System;
 using System.Linq;
 using Npgsql.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Biohazard.Model;
 
-namespace Biohazard
+namespace Biohazard.Model
 {
     public class QMail
     {
+
+        public int? Id { get; set; }
+        public string UniqueId { get; set; }
         public string? Sender { get; set; }
         public string? Body { get; set; }
         public DateTime? Date { get; set; }
-        public string? ID { get; set; }
         public string? Subject { get; set; }
         public string? Header { get; set; }
         public State CurrentState { get; set; }
         public SeverityLevels Severity { get; set; }
-        public ICollection<Responses> Response { get; set; }
+        public Response Response { get; set; }
 
         public enum SeverityLevels
         {
@@ -35,6 +36,11 @@ namespace Biohazard
             RetractedByUser,
             ApprovedByAdmin,
             DeniedByAdmin
+        }
+
+        public QMail()
+        {
+
         }
 
         public QMail(MimeMessage message)
@@ -54,7 +60,7 @@ namespace Biohazard
             Date = mail.Date.DateTime;
 
             // Get the message ID from the mail
-            ID = mail.MessageId;
+            UniqueId = mail.MessageId;
 
             // Get the subject from the mail
             Subject = mail.Subject;
