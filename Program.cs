@@ -1,5 +1,7 @@
 
 
+using Biohazard.WebApi;
+
 namespace Biohazard
 {
 	public class Program
@@ -32,6 +34,7 @@ namespace Biohazard
 
 			// Add services to the container.
 			builder.Services.AddAuthorization();
+			builder.Services.AddControllers();
 
 
 			var app = builder.Build();
@@ -41,23 +44,9 @@ namespace Biohazard
 			app.UseHttpsRedirection();
 
 			app.UseAuthorization();
-
-			var summaries = new[]
-			{
-			"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-		};
-
+			
 			app.MapGet("/weatherforecast", (HttpContext httpContext) =>
 			{
-				var forecast = Enumerable.Range(1, 5).Select(index =>
-					new WeatherForecast
-					{
-						Date = DateTime.Now.AddDays(index),
-						TemperatureC = Random.Shared.Next(-20, 55),
-						Summary = summaries[Random.Shared.Next(summaries.Length)]
-					})
-					.ToArray();
-				return forecast;
 			});
 
 			app.Run();
