@@ -1,8 +1,6 @@
-﻿using Xunit;
-
-namespace Biohazard.Tests
+﻿namespace Biohazard.Tests
 {
-    public class IdleClientUnitTest
-    {
-    }
+	public class IdleClientUnitTest
+	{
+	}
 }

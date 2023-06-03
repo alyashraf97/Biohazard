@@ -1,19 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using Serilog;
+﻿using Biohazard.Shared;
+using Biohazard.Worker;
 using MailKit;
 using MailKit.Net.Imap;
-using MailKit.Security;
-using System.Net.Mail;
-using MimeKit;
 using MailKit.Search;
-using Biohazard.Shared;
-using Biohazard.Worker;
-using System.Collections;
+using MimeKit;
 
 namespace Biohazard.Mail
 {
@@ -45,7 +35,7 @@ namespace Biohazard.Mail
 			{
 				var idleTask = client.RunAsync();
 
-				Task.Run(()=>
+				Task.Run(() =>
 				{
 					Task.WaitAll();
 				}).Wait();
@@ -107,7 +97,7 @@ namespace Biohazard.Mail
 			} while (true);
 
 			foreach (var message in fetched)
-			{				
+			{
 				_log.Information($"{client.Inbox}: new message: UID {message.Key}");
 				messages.Add(message.Key, message.Value);
 				queue.EnqueueQMail(message.Value);

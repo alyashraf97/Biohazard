@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using Biohazard.Shared;
-using Serilog;
+﻿using Biohazard.Shared;
 using MailKit.Security;
 
 
@@ -13,10 +10,10 @@ namespace Biohazard.Mail
 		public int Port { get; }
 		public string Username { get; }
 		public string Password { get; }
-		public SecureSocketOptions Encryption {get; set;}
+		public SecureSocketOptions Encryption { get; set; }
 		private Serilog.ILogger _log = QLogger.GetLogger<IMapConfig>();
 
-		public IMapConfig() 
+		public IMapConfig()
 		{
 			try
 			{

@@ -1,25 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Biohazard.Model;
+﻿using Biohazard.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biohazard.Data
 {
-    public class QMailDbContext : DbContext
-    {
-        public QMailDbContext(DbContextOptions<QMailDbContext> options) : base(options)
-        {
+	public class QMailDbContext : DbContext
+	{
+		public QMailDbContext(DbContextOptions<QMailDbContext> options) : base(options)
+		{
 
-        }
+		}
 
-        public DbSet<QMail> QMails { get; set; }
-        public DbSet<Response> Responses { get; set; }
+		public DbSet<QMail> QMails { get; set; }
+		public DbSet<Response> Responses { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=biohazard;Username=postgres;Password=postgres");
-        }
-        
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.UseNpgsql("Host=localhost;Database=biohazard;Username=postgres;Password=postgres");
+		}
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
 			// Configure the QMail entity
 
 			modelBuilder.Entity<QMail>(entity =>
@@ -72,6 +72,6 @@ namespace Biohazard.Data
 				entity.HasIndex(e => e.Id).IsUnique();
 			});
 		}
-    }
+	}
 
 }

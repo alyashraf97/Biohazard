@@ -1,6 +1,6 @@
 ﻿namespace Biohazard.Worker
 {
-    public class QuarantinedMailConsumer
-    {
-    }
+	public class QuarantinedMailConsumer
+	{
+	}
 }

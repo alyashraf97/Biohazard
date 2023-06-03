@@ -1,9 +1,7 @@
 ﻿using Biohazard.Shared;
 using Biohazard.Worker;
-using MailKit.Net.Imap;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using MailKit;
+using MailKit.Net.Smtp;
 using MimeKit;
 
 namespace Biohazard.Mail

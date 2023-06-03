@@ -1,82 +1,81 @@
 ﻿using Biohazard.Data;
 using Biohazard.Model;
-using MimeKit;
-using MailKit;
-using MailKit.Net.Imap;
 using Biohazard.Shared;
+using MailKit.Net.Imap;
+using MimeKit;
 
 
 namespace Biohazard.Worker
 {
-    public class QMailProcessor
-    {
-        private QMailQueue<MimeMessage> queue;
-        private Serilog.ILogger _log = QLogger.GetLogger<QMailProcessor>();
-        private QMailRepository _context;
-        private ImapClient _imapClient;
+	public class QMailProcessor
+	{
+		private QMailQueue<MimeMessage> queue;
+		private Serilog.ILogger _log = QLogger.GetLogger<QMailProcessor>();
+		private QMailRepository _context;
+		private ImapClient _imapClient;
 
-        public QMailProcessor()
-        {
-            queue = QMailQueue<MimeMessage>.Instance;
-        }
+		public QMailProcessor()
+		{
+			queue = QMailQueue<MimeMessage>.Instance;
+		}
 
-        public void Start()
-        {
-            _log.Information("QLogger started.");
+		public void Start()
+		{
+			_log.Information("QLogger started.");
 
-            do
-            {
-                try
-                {
-                    var message = TryDequeue();
-                    PushMessageToDatabase(message);
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"Exception occurred: {ex.Message}");
-                }
-            }
-            while (true);
-        }
+			do
+			{
+				try
+				{
+					var message = TryDequeue();
+					PushMessageToDatabase(message);
+				}
+				catch (Exception ex)
+				{
+					_log.Error($"Exception occurred: {ex.Message}");
+				}
+			}
+			while (true);
+		}
 
-        private void PushMessageToDatabase(MimeMessage message)
-        {
-            if (message != null && VerifyUniqueMessage(message))
-            {
-                try
-                {
-                    var messageParsed = new QMail(message);
-                    Task.Run(() => _context.AddMailAsync(messageParsed));
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"Exception occurred: {ex.Message}");
-                }
-            }
-            else 
-            {
-                return;
-            }
-        }
+		private void PushMessageToDatabase(MimeMessage message)
+		{
+			if (message != null && VerifyUniqueMessage(message))
+			{
+				try
+				{
+					var messageParsed = new QMail(message);
+					Task.Run(() => _context.AddMailAsync(messageParsed));
+				}
+				catch (Exception ex)
+				{
+					_log.Error($"Exception occurred: {ex.Message}");
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
 
-        private MimeMessage? TryDequeue()
-        {
-            if (!queue.IsEmpty)
-            {
-                try
-                {
-                    return queue.DequeueQuarantinedMail();
-                }
-                catch (Exception ex)
-                {
-                    _log.Error($"Exception occurred: {ex.Message}");
-                }
-            }
-            return null;
-        }
+		private MimeMessage? TryDequeue()
+		{
+			if (!queue.IsEmpty)
+			{
+				try
+				{
+					return queue.DequeueQuarantinedMail();
+				}
+				catch (Exception ex)
+				{
+					_log.Error($"Exception occurred: {ex.Message}");
+				}
+			}
+			return null;
+		}
 
-        private bool VerifyUniqueMessage(MimeMessage message)
-        {
+		private bool VerifyUniqueMessage(MimeMessage message)
+		{
 
 			// Check if the message's unique ID already exists in the database
 			var existingMail = _context.GetMailByIdAsync(message.MessageId);
@@ -92,10 +91,10 @@ namespace Biohazard.Worker
 			return true;
 		}
 
-        private void SendEmailToUser()
-        {
+		private void SendEmailToUser()
+		{
 
-        }
-        
-    }
+		}
+
+	}
 }
