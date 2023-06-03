@@ -3,6 +3,7 @@ using Biohazard.Model;
 using MimeKit;
 using MailKit;
 using MailKit.Net.Imap;
+using Biohazard.Shared;
 
 
 namespace Biohazard.Worker
@@ -27,7 +28,8 @@ namespace Biohazard.Worker
             {
                 try
                 {
-                    PushMessageToDatabase();
+                    var message = TryDequeue();
+                    PushMessageToDatabase(message);
                 }
                 catch (Exception ex)
                 {
@@ -37,30 +39,58 @@ namespace Biohazard.Worker
             while (true);
         }
 
-        private void PushMessageToDatabase()
+        private void PushMessageToDatabase(MimeMessage message)
+        {
+            if (message != null && VerifyUniqueMessage(message))
+            {
+                try
+                {
+                    var messageParsed = new QMail(message);
+                    Task.Run(() => _context.AddMailAsync(messageParsed));
+                }
+                catch (Exception ex)
+                {
+                    _log.Error($"Exception occurred: {ex.Message}");
+                }
+            }
+            else 
+            {
+                return;
+            }
+        }
+
+        private MimeMessage? TryDequeue()
         {
             if (!queue.IsEmpty)
             {
-                var message = queue.DequeueQuarantinedMail();
-
-                if (message != null)
+                try
                 {
-                    try
-                    {
-                        var messageParsed = new QMail(message);
-                        Task.Run(() => _context.AddMailAsync(messageParsed));
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error($"Exception occurred: {ex.Message}");
-                    }
+                    return queue.DequeueQuarantinedMail();
                 }
-                else 
+                catch (Exception ex)
                 {
-                    throw new NullReferenceException("Null Reference to an email in queue!");
+                    _log.Error($"Exception occurred: {ex.Message}");
                 }
             }
+            return null;
         }
+
+        private bool VerifyUniqueMessage(MimeMessage message)
+        {
+
+			// Check if the message's unique ID already exists in the database
+			var existingMail = _context.GetMailByIdAsync(message.MessageId);
+
+			// If the message already exists in the database, it is not unique
+			if (existingMail.Result != null)
+			{
+				_log.Warning($"Skipping processing for duplicate message with ID: {message.MessageId}");
+				return false;
+			}
+
+			// If the message doesn't exist in the database, it is unique
+			return true;
+		}
 
         private void SendEmailToUser()
         {

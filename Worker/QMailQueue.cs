@@ -41,5 +41,10 @@ namespace Biohazard.Worker
                 return default;
             }            
         }
+
+        public void FilterUniqueQMails()
+        {
+
+        }
     }
 }

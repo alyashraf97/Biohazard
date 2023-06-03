@@ -10,8 +10,8 @@ namespace Biohazard.Model
 {
     public class QMail
     {
-
-        public int? Id { get; set; }
+		[Key]
+		public int? Id { get; set; }
         public string UniqueId { get; set; }
         public string? Sender { get; set; }
         public string? Body { get; set; }
