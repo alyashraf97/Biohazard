@@ -24,27 +24,33 @@ namespace Biohazard.Mail
 			conf = new IMapConfig();
 		}
 
-		public void Reconnect()
+		async Task ReconnectAsync()
 		{
-			try
+			if (!client.IsConnected)
 			{
-				client.Connect(conf.Host, conf.Port, conf.Encryption);
-				_log.Information($"Smtp Client Connected at: {DateTime.Now}");
+				try
+				{
+                    await client.ConnectAsync(conf.Host, conf.Port, conf.Encryption);
+                    _log.Information($"Smtp Client Connected at: {DateTime.Now}");
+                }
+				catch (Exception ex) 
+				{
+					_log.Error($"Failed to connect at {DateTime.Now} : {ex.Message}");
+				}
+            }
 
-				if (client.IsConnected)
-				{
-					client.Authenticate(conf.Username, conf.Password);
-					_log.Information($"SMTP Client Authenticated at: {DateTime.Now}");
-				}
-				else
-				{
-					_log.Error($"Failed to Connect at {DateTime.Now}");
-				}
-			}
-			catch (Exception ex)
+            if (!client.IsAuthenticated)
 			{
-				_log.Error($"Failed to Start at {DateTime.Now}, Exception: {ex.Message}");
-			}
+				try
+				{
+                    await client.AuthenticateAsync(conf.Username, conf.Password);
+                    _log.Information($"SMTP Client Authenticated at: {DateTime.Now}");
+                }
+				catch (Exception ex)
+				{
+					_log.Error($"Failed to authenticate at {DateTime.Now} : {ex.Message}");
+				}
+			}			
 		}
 
 

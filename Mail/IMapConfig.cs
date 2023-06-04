@@ -18,7 +18,7 @@ namespace Biohazard.Mail
 			try
 			{
 				var config = new ConfigurationBuilder()
-					.AddJsonFile("imapclientconf.json")
+					.AddJsonFile("imapconfig.json")
 					.Build();
 
 				Host = config["host"];

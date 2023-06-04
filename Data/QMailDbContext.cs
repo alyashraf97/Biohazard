@@ -5,6 +5,7 @@ namespace Biohazard.Data
 {
 	public class QMailDbContext : DbContext
 	{
+
 		public QMailDbContext(DbContextOptions<QMailDbContext> options) : base(options)
 		{
 

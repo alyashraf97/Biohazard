@@ -49,14 +49,33 @@ namespace Biohazard.Mail
 		async Task ReconnectAsync()
 		{
 			if (!client.IsConnected)
-				await client.ConnectAsync(conf.Host, conf.Port, conf.Encryption, cancel.Token);
+			{
+				try
+				{
+                    await client.ConnectAsync(conf.Host, conf.Port, conf.Encryption, cancel.Token);
+                    _log.Information($"Idle Client connected at {DateTime.Now}");
+                }
+				catch (Exception ex)
+				{
+                    _log.Error($"Failed to connect at {DateTime.Now} : {ex.Message}");
+                }
+			}
 
 			if (!client.IsAuthenticated)
 			{
-				await client.AuthenticateAsync(conf.Username, conf.Password, cancel.Token);
+				try
+				{
+                    await client.AuthenticateAsync(conf.Username, conf.Password, cancel.Token);
+                    _log.Information($"Idle Client Authenticated at: {DateTime.Now}");
 
-				await client.Inbox.OpenAsync(FolderAccess.ReadOnly, cancel.Token);
-			}
+                    await client.Inbox.OpenAsync(FolderAccess.ReadOnly, cancel.Token);
+                    _log.Information($"Inbox folder opened at: {DateTime.Now}");
+                }
+				catch (Exception ex)
+				{
+                    _log.Error($"Failed to authenticate at {DateTime.Now} : {ex.Message}");
+                }
+            }
 		}
 
 		async Task GetMessages()
